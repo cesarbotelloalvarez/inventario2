@@ -1,0 +1,9 @@
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import type { Trabajador } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import { Field } from "@/components/forms/label";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+export function TrabajadorForm({ trabajador }: { trabajador?: Trabajador }) { const router=useRouter(); const [error,setError]=useState(""); const [loading,setLoading]=useState(false); async function onSubmit(e: React.FormEvent<HTMLFormElement>) { e.preventDefault(); setLoading(true); const fd=new FormData(e.currentTarget); const body={ nombre: fd.get("nombre"), puesto: fd.get("puesto"), telefono: fd.get("telefono") || null, activo: fd.get("activo") === "true" }; const res=await fetch(trabajador?`/api/trabajadores/${trabajador.id}`:"/api/trabajadores",{method:trabajador?"PATCH":"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}); const data=await res.json(); setLoading(false); if(!res.ok){setError(data.error??"Error al guardar");return;} router.push(`/trabajadores/${data.id}`); router.refresh(); } return <form onSubmit={onSubmit} className="max-w-xl"><Field label="Nombre"><Input name="nombre" required defaultValue={trabajador?.nombre}/></Field><Field label="Puesto"><Input name="puesto" required defaultValue={trabajador?.puesto}/></Field><Field label="Teléfono"><Input name="telefono" defaultValue={trabajador?.telefono ?? ""}/></Field><Field label="Estado"><Select name="activo" defaultValue={String(trabajador?.activo ?? true)}><option value="true">Activo</option><option value="false">Inactivo</option></Select></Field>{error && <p className="mb-4 text-sm text-red-600">{error}</p>}<Button disabled={loading}>{loading?"Guardando...":"Guardar trabajador"}</Button></form>; }

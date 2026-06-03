@@ -1,0 +1,10 @@
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/db";
+import { PageHeader } from "@/components/layout/page-header";
+import { Card, CardTitle } from "@/components/ui/card";
+import { TrabajadorForm } from "@/components/forms/trabajador-form";
+import { StatusBadge, CondicionBadge } from "@/components/articulos/status-badge";
+import { formatFecha, MOVIMIENTO_LABELS } from "@/lib/utils";
+import { demoArticulos, demoMovimientos, demoTrabajadores, isDemoMode } from "@/lib/demo-data";
+export const dynamic="force-dynamic";
+export default async function TrabajadorDetallePage({params}:{params:Promise<{id:string}>}){const {id}=await params; const t=isDemoMode ? (()=>{ const trabajador=demoTrabajadores.find((x)=>x.id===id); return trabajador ? { ...trabajador, articulosActuales: demoArticulos.filter((a)=>a.trabajadorActualId===id), movimientos: demoMovimientos.filter((m)=>m.trabajadorId===id) } : null; })() : await prisma.trabajador.findUnique({where:{id},include:{articulosActuales:true,movimientos:{include:{articulo:true},orderBy:{fecha:"desc"}}}}); if(!t) notFound(); return <div><PageHeader title={t.nombre} description={t.puesto}/><div className="mb-8 grid gap-6 lg:grid-cols-2"><Card><CardTitle>Datos</CardTitle><div className="mt-4"><TrabajadorForm trabajador={t}/></div></Card><Card><CardTitle>Artículos actuales</CardTitle><ul className="mt-4 divide-y divide-slate-100">{t.articulosActuales.map((a)=><li key={a.id} className="py-3 text-sm"><p className="font-medium">{a.nombre}</p><div className="mt-1 flex gap-2"><StatusBadge status={a.status}/><CondicionBadge condicion={a.condicion}/></div></li>)}{t.articulosActuales.length===0&&<p className="mt-4 text-sm text-slate-500">Sin artículos actuales.</p>}</ul></Card></div><Card><CardTitle>Historial recibido</CardTitle><table className="mt-4 w-full text-left text-sm"><tbody>{t.movimientos.map((m)=><tr key={m.id} className="border-t border-slate-100"><td className="py-2">{formatFecha(m.fecha)}</td><td>{MOVIMIENTO_LABELS[m.tipo]}</td><td>{m.articulo.nombre}</td><td className="text-slate-500">{m.comentarios ?? "—"}</td></tr>)}</tbody></table></Card></div>}

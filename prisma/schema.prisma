@@ -1,0 +1,129 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ArticuloStatus {
+  STOCK
+  ASIGNADO
+  PRESTADO
+  TERMINADO
+  PERDIDO
+}
+
+enum CondicionArticulo {
+  OPTIMO
+  DANADO
+  PERDIDO
+  TERMINADO
+}
+
+enum TipoMovimientoInventario {
+  REGISTRO
+  ASIGNACION
+  PRESTAMO
+  DEVOLUCION
+  DANO
+  PERDIDA
+  TERMINADO
+  AUDITORIA
+  CORRECCION
+}
+
+model Articulo {
+  id                  String                 @id @default(cuid())
+  nombre              String
+  categoria           String
+  descripcion         String?
+  numeroSerie         String?                @unique
+  cantidad            Int?
+  fechaRegistro       DateTime               @default(now())
+  status              ArticuloStatus         @default(STOCK)
+  condicion           CondicionArticulo      @default(OPTIMO)
+  trabajadorActualId  String?
+  fechaSalida         DateTime?
+  trabajadorActual    Trabajador?            @relation("ArticuloActual", fields: [trabajadorActualId], references: [id], onDelete: Restrict)
+  movimientos         MovimientoInventario[]
+  auditoriaDetalles   AuditoriaArticulo[]
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+
+  @@index([status])
+  @@index([condicion])
+  @@index([categoria])
+  @@index([trabajadorActualId])
+}
+
+model Trabajador {
+  id                  String                 @id @default(cuid())
+  nombre              String
+  puesto              String
+  telefono            String?
+  activo              Boolean                @default(true)
+  articulosActuales   Articulo[]             @relation("ArticuloActual")
+  movimientos         MovimientoInventario[]
+  auditorias          AuditoriaMensual[]
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+
+  @@index([activo])
+  @@index([nombre])
+}
+
+model MovimientoInventario {
+  id                 String                   @id @default(cuid())
+  tipo               TipoMovimientoInventario
+  fecha              DateTime                 @default(now())
+  articuloId         String
+  trabajadorId       String?
+  statusAnterior     ArticuloStatus?
+  statusNuevo        ArticuloStatus?
+  condicionAnterior  CondicionArticulo?
+  condicionNueva     CondicionArticulo?
+  comentarios        String?
+  actor              String?
+  articulo           Articulo                 @relation(fields: [articuloId], references: [id], onDelete: Restrict)
+  trabajador         Trabajador?              @relation(fields: [trabajadorId], references: [id], onDelete: Restrict)
+  auditoriaDetalleId String?
+  auditoriaDetalle   AuditoriaArticulo?       @relation(fields: [auditoriaDetalleId], references: [id], onDelete: SetNull)
+  createdAt          DateTime                 @default(now())
+
+  @@index([tipo])
+  @@index([fecha])
+  @@index([articuloId])
+  @@index([trabajadorId])
+}
+
+model AuditoriaMensual {
+  id            String              @id @default(cuid())
+  trabajadorId  String
+  fecha         DateTime            @default(now())
+  comentarios   String?
+  trabajador    Trabajador          @relation(fields: [trabajadorId], references: [id], onDelete: Restrict)
+  detalles      AuditoriaArticulo[]
+  createdAt     DateTime            @default(now())
+
+  @@index([trabajadorId])
+  @@index([fecha])
+}
+
+model AuditoriaArticulo {
+  id                    String                  @id @default(cuid())
+  auditoriaId           String
+  articuloId            String
+  condicionConfirmada   CondicionArticulo
+  sigueEnPosesion       Boolean
+  comentarios           String?
+  auditoria             AuditoriaMensual        @relation(fields: [auditoriaId], references: [id], onDelete: Restrict)
+  articulo              Articulo                @relation(fields: [articuloId], references: [id], onDelete: Restrict)
+  movimientos           MovimientoInventario[]
+  createdAt             DateTime                @default(now())
+
+  @@index([auditoriaId])
+  @@index([articuloId])
+}
