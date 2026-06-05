@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   try {
     const body = articuloCreateSchema.parse(await request.json());
     const articulo = await prisma.$transaction(async (tx) => {
-      const created = await tx.articulo.create({ data: { ...body, numeroSerie: body.numeroSerie || null, descripcion: body.descripcion || null, cantidad: body.cantidad ?? null } });
+      const created = await tx.articulo.create({ data: { ...body, numeroSerie: body.numeroSerie || null, descripcion: body.descripcion || null, fotoUrl: body.fotoUrl || null, cantidad: body.cantidad ?? null } });
       await registrarMovimiento(tx, { articuloId: created.id, tipo: "REGISTRO", statusNuevo: "STOCK", condicionNueva: "OPTIMO", comentarios: "Alta inicial de artículo" });
       return tx.articulo.findUniqueOrThrow({ where: { id: created.id }, include: { trabajadorActual: true } });
     });

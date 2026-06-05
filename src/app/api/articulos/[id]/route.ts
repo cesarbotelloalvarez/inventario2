@@ -20,7 +20,7 @@ export async function PATCH(request: Request, { params }: Params) {
   try {
     const { id } = await params;
     const body = articuloUpdateSchema.parse(await request.json());
-    const articulo = await prisma.articulo.update({ where: { id }, data: { ...body, numeroSerie: body.numeroSerie || null, descripcion: body.descripcion || null }, include: { trabajadorActual: true } });
+    const articulo = await prisma.articulo.update({ where: { id }, data: { ...body, numeroSerie: body.numeroSerie || null, descripcion: body.descripcion || null, fotoUrl: body.fotoUrl || null }, include: { trabajadorActual: true } });
     return jsonOk(articulo);
   } catch (e) { return handleApiError(e); }
 }

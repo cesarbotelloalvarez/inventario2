@@ -8,6 +8,7 @@ export const articuloCreateSchema = z.object({
   categoria: z.string().min(1, "Categoría requerida"),
   descripcion: z.string().optional().nullable(),
   numeroSerie: z.string().optional().nullable(),
+  fotoUrl: z.string().regex(/^data:image\/(jpeg|jpg|png|webp);base64,/, "Imagen inválida").max(1_500_000).optional().nullable(),
   cantidad: z.coerce.number().int().positive().optional().nullable(),
 });
 
@@ -16,6 +17,7 @@ export const articuloUpdateSchema = z.object({
   categoria: z.string().min(1).optional(),
   descripcion: z.string().optional().nullable(),
   numeroSerie: z.string().optional().nullable(),
+  fotoUrl: z.string().regex(/^data:image\/(jpeg|jpg|png|webp);base64,/, "Imagen inválida").max(1_500_000).optional().nullable(),
   cantidad: z.coerce.number().int().positive().optional().nullable(),
 });
 

@@ -41,6 +41,7 @@ model Articulo {
   categoria           String
   descripcion         String?
   numeroSerie         String?                @unique
+  fotoUrl             String?
   cantidad            Int?
   fechaRegistro       DateTime               @default(now())
   status              ArticuloStatus         @default(STOCK)
