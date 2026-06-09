@@ -1,11 +1,13 @@
 import { z } from "zod";
+import { ARTICULO_CATEGORIAS } from "@/lib/articulo-categorias";
 
 export const articuloStatusSchema = z.enum(["STOCK", "ASIGNADO", "PRESTADO", "TERMINADO", "PERDIDO"]);
 export const condicionArticuloSchema = z.enum(["OPTIMO", "DANADO", "PERDIDO", "TERMINADO"]);
+export const articuloCategoriaSchema = z.enum(ARTICULO_CATEGORIAS, { errorMap: () => ({ message: "Selecciona Herramienta o Uniforme" }) });
 
 export const articuloCreateSchema = z.object({
   nombre: z.string().min(1, "Nombre requerido"),
-  categoria: z.string().min(1, "Categoría requerida"),
+  categoria: articuloCategoriaSchema,
   descripcion: z.string().optional().nullable(),
   numeroSerie: z.string().optional().nullable(),
   fotoUrl: z.string().regex(/^data:image\/(jpeg|jpg|png|webp);base64,/, "Imagen inválida").max(1_500_000).optional().nullable(),
@@ -14,7 +16,7 @@ export const articuloCreateSchema = z.object({
 
 export const articuloUpdateSchema = z.object({
   nombre: z.string().min(1).optional(),
-  categoria: z.string().min(1).optional(),
+  categoria: articuloCategoriaSchema.optional(),
   descripcion: z.string().optional().nullable(),
   numeroSerie: z.string().optional().nullable(),
   fotoUrl: z.string().regex(/^data:image\/(jpeg|jpg|png|webp);base64,/, "Imagen inválida").max(1_500_000).optional().nullable(),

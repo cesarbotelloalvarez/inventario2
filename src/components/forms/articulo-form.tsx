@@ -4,7 +4,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/forms/label";
-import { Input, Textarea } from "@/components/ui/input";
+import { Input, Select, Textarea } from "@/components/ui/input";
+import { ARTICULO_CATEGORIAS } from "@/lib/articulo-categorias";
 import type { Articulo } from "@prisma/client";
 
 const MAX_IMAGE_DATA_URL_LENGTH = 1_400_000;
@@ -93,7 +94,7 @@ export function ArticuloForm({ articulo }: { articulo?: Articulo }) {
     <form onSubmit={onSubmit} className="max-w-xl">
       <p className="mb-4 text-sm text-slate-500">El status inicial será Stock y la condición inicial será Óptima. El artículo no podrá eliminarse.</p>
       <Field label="Nombre"><Input name="nombre" required defaultValue={articulo?.nombre}/></Field>
-      <Field label="Categoría"><Input name="categoria" required defaultValue={articulo?.categoria} placeholder="Herramienta, consumible, seguridad..."/></Field>
+      <Field label="Categoría"><Select name="categoria" required defaultValue={articulo?.categoria ?? "Herramienta"}>{ARTICULO_CATEGORIAS.map((categoria) => <option key={categoria} value={categoria}>{categoria}</option>)}</Select></Field>
       <Field label="Número de serie"><Input name="numeroSerie" defaultValue={articulo?.numeroSerie ?? ""}/></Field>
       <Field label="Cantidad, si aplica"><Input name="cantidad" type="number" min="1" defaultValue={articulo?.cantidad ?? ""}/></Field>
       <Field label="Foto del artículo">
