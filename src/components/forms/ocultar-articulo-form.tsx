@@ -50,7 +50,7 @@ export function OcultarArticuloForm({ articuloId, action }: Props) {
         <Textarea name="motivo" placeholder={isRestore ? "Ej. se ocultó por error" : "Ej. duplicado o capturado por error"} />
       </Field>
       {error && <p className="text-sm text-red-600">{error}</p>}
-      <Button type="submit" disabled={loading} className={isRestore ? "" : "bg-red-700 hover:bg-red-800"}>
+      <Button type="submit" disabled={loading} className={isRestore ? "" : "bg-red-700 text-zinc-50 hover:bg-red-800"}>
         {loading ? "Procesando..." : isRestore ? "Restaurar artículo" : "Ocultar artículo"}
       </Button>
     </form>

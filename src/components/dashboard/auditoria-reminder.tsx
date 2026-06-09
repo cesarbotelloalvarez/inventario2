@@ -35,14 +35,14 @@ export function AuditoriaReminder() {
   }
 
   return (
-    <Card className={cn("mb-8", done ? "border-emerald-200 bg-emerald-50" : isLastFiveDays ? "border-amber-200 bg-amber-50" : "bg-white")}>
+    <Card className={cn("mb-8", done ? "border-emerald-500/40 bg-emerald-950/40" : isLastFiveDays ? "border-yellow-400/50 bg-yellow-950/30" : "bg-zinc-950/90")}>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-lg font-semibold text-slate-900">Auditoría mensual</h2>
+            <h2 className="text-lg font-semibold text-zinc-50">Auditoría mensual</h2>
             {done ? <Badge tone="success">Hecha</Badge> : isLastFiveDays ? <Badge tone="warning">Recordatorio</Badge> : <Badge>Programada</Badge>}
           </div>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm text-zinc-300">
             {done
               ? "La auditoría de este mes está marcada como hecha en este navegador."
               : isLastFiveDays
@@ -51,13 +51,13 @@ export function AuditoriaReminder() {
           </p>
           <Link href="/auditorias/nueva" className="mt-3 inline-flex text-sm font-medium text-blue-700 hover:underline">Ir a nueva auditoría</Link>
         </div>
-        <label className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700">
+        <label className="flex items-center gap-2 rounded-lg border border-zinc-700 bg-black px-3 py-2 text-sm font-medium text-zinc-100">
           <input
             type="checkbox"
             checked={done}
             disabled={!loaded}
             onChange={(event) => onToggle(event.target.checked)}
-            className="h-4 w-4 rounded border-slate-300"
+            className="h-4 w-4 rounded border-zinc-600 accent-yellow-400"
           />
           Auditoría del mes hecha
         </label>
