@@ -21,7 +21,7 @@ export default async function FueraInventarioPage() {
 
   return (
     <div>
-      <PageHeader title="Préstamos temporales" description="Artículos prestados que deben regresar al inventario" />
+      <PageHeader title="Prestado" description="Herramientas prestadas que deben regresar al inventario" />
       <div className="grid gap-4">
         {articulos.map((a) => (
           <Card key={a.id}>
@@ -47,7 +47,7 @@ export default async function FueraInventarioPage() {
             </div>
           </Card>
         ))}
-        {articulos.length === 0 && <Card><p className="text-sm text-slate-500">No hay artículos prestados temporalmente.</p></Card>}
+        {articulos.length === 0 && <Card><p className="text-sm text-slate-500">No hay herramientas prestadas.</p></Card>}
       </div>
     </div>
   );
