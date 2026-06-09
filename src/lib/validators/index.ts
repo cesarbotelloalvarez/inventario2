@@ -3,7 +3,7 @@ import { ARTICULO_CATEGORIAS } from "@/lib/articulo-categorias";
 
 export const articuloStatusSchema = z.enum(["STOCK", "ASIGNADO", "PRESTADO", "TERMINADO", "PERDIDO"]);
 export const condicionArticuloSchema = z.enum(["OPTIMO", "DANADO", "PERDIDO", "TERMINADO"]);
-export const articuloCategoriaSchema = z.enum(ARTICULO_CATEGORIAS, { errorMap: () => ({ message: "Selecciona Herramienta o Uniforme" }) });
+export const articuloCategoriaSchema = z.enum(ARTICULO_CATEGORIAS, { errorMap: () => ({ message: "Selecciona PPF, Vinil, Polarizado, Home, Detallado o Armado" }) });
 
 export const articuloCreateSchema = z.object({
   nombre: z.string().min(1, "Nombre requerido"),
