@@ -12,6 +12,7 @@ export async function POST(request: Request, { params }: Params) {
     const articulo = await prisma.$transaction(async (tx) => {
       const current = await tx.articulo.findUnique({ where: { id } });
       if (!current) throw new Error("Artículo no encontrado");
+      if (current.oculto) throw new Error("El artículo está oculto y no puede modificarse desde inventario.");
       if (!["ASIGNADO", "PRESTADO"].includes(current.status)) throw new Error("Solo se pueden devolver artículos asignados o prestados.");
       const nuevoStatus = statusPorDevolucion(body.condicion);
       const updated = await tx.articulo.update({ where: { id }, data: { status: nuevoStatus, condicion: body.condicion, trabajadorActualId: null, fechaSalida: null } });

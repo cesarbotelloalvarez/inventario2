@@ -17,6 +17,7 @@ export async function POST(request: Request) {
       for (const item of body.detalles) {
         const articulo = await tx.articulo.findUnique({ where: { id: item.articuloId } });
         if (!articulo) throw new Error("Artículo no encontrado en auditoría");
+        if (articulo.oculto) throw new Error("No se pueden auditar artículos ocultos.");
         const detalle = await tx.auditoriaArticulo.create({ data: { auditoriaId: created.id, articuloId: item.articuloId, condicionConfirmada: item.condicionConfirmada, sigueEnPosesion: item.sigueEnPosesion, comentarios: item.comentarios ?? null } });
         await registrarMovimiento(tx, { articuloId: item.articuloId, trabajadorId: body.trabajadorId, tipo: "AUDITORIA", statusAnterior: articulo.status, statusNuevo: articulo.status, condicionAnterior: articulo.condicion, condicionNueva: item.condicionConfirmada, comentarios: item.comentarios ?? body.comentarios, auditoriaDetalleId: detalle.id });
       }

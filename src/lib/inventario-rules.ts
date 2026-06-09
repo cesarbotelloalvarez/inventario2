@@ -2,7 +2,8 @@ import type { Articulo, ArticuloStatus, CondicionArticulo, Prisma, TipoMovimient
 
 type Tx = Prisma.TransactionClient;
 
-export function ensureDisponible(articulo: Pick<Articulo, "status" | "condicion">) {
+export function ensureDisponible(articulo: Pick<Articulo, "status" | "condicion" | "oculto">) {
+  if (articulo.oculto) throw new Error("El artículo está oculto y no está disponible.");
   if (articulo.status !== "STOCK") throw new Error("El artículo no está disponible en stock.");
   if (["PERDIDO", "TERMINADO"].includes(articulo.condicion)) throw new Error("El artículo no está disponible por su condición actual.");
 }

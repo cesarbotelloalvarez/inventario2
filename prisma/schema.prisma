@@ -33,6 +33,8 @@ enum TipoMovimientoInventario {
   TERMINADO
   AUDITORIA
   CORRECCION
+  OCULTAR
+  RESTAURAR
 }
 
 model Articulo {
@@ -48,6 +50,9 @@ model Articulo {
   condicion           CondicionArticulo      @default(OPTIMO)
   trabajadorActualId  String?
   fechaSalida         DateTime?
+  oculto              Boolean                @default(false)
+  ocultadoAt          DateTime?
+  ocultadoMotivo      String?
   trabajadorActual    Trabajador?            @relation("ArticuloActual", fields: [trabajadorActualId], references: [id], onDelete: Restrict)
   movimientos         MovimientoInventario[]
   auditoriaDetalles   AuditoriaArticulo[]
@@ -58,6 +63,7 @@ model Articulo {
   @@index([condicion])
   @@index([categoria])
   @@index([trabajadorActualId])
+  @@index([oculto])
 }
 
 model Trabajador {

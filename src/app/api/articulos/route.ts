@@ -13,6 +13,7 @@ export async function GET(request: Request) {
     const categoria = searchParams.get("categoria");
     const articulos = await prisma.articulo.findMany({
       where: {
+        oculto: false,
         ...(status ? { status } : {}),
         ...(condicion ? { condicion } : {}),
         ...(categoria ? { categoria } : {}),

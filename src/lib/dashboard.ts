@@ -4,15 +4,16 @@ import { demoDashboardData, isDemoMode } from "@/lib/demo-data";
 export async function getDashboardData() {
   if (isDemoMode) return demoDashboardData();
 
+  const visible = { oculto: false };
   const [total, stock, asignado, prestado, perdido, terminado, danados, movimientos] = await Promise.all([
-    prisma.articulo.count(),
-    prisma.articulo.count({ where: { status: "STOCK" } }),
-    prisma.articulo.count({ where: { status: "ASIGNADO" } }),
-    prisma.articulo.count({ where: { status: "PRESTADO" } }),
-    prisma.articulo.count({ where: { status: "PERDIDO" } }),
-    prisma.articulo.count({ where: { status: "TERMINADO" } }),
-    prisma.articulo.count({ where: { condicion: "DANADO" } }),
-    prisma.movimientoInventario.findMany({ where: { tipo: { in: ["DANO", "PERDIDA"] } }, include: { trabajador: true } }),
+    prisma.articulo.count({ where: visible }),
+    prisma.articulo.count({ where: { ...visible, status: "STOCK" } }),
+    prisma.articulo.count({ where: { ...visible, status: "ASIGNADO" } }),
+    prisma.articulo.count({ where: { ...visible, status: "PRESTADO" } }),
+    prisma.articulo.count({ where: { ...visible, status: "PERDIDO" } }),
+    prisma.articulo.count({ where: { ...visible, status: "TERMINADO" } }),
+    prisma.articulo.count({ where: { ...visible, condicion: "DANADO" } }),
+    prisma.movimientoInventario.findMany({ where: { tipo: { in: ["DANO", "PERDIDA"] }, articulo: { is: visible } }, include: { trabajador: true } }),
   ]);
 
   const porTrabajador = (tipo: "DANO" | "PERDIDA") => Object.values(
@@ -25,7 +26,7 @@ export async function getDashboardData() {
   ).sort((a, b) => b.total - a.total).slice(0, 5);
 
   const fueraMasTiempo = await prisma.articulo.findMany({
-    where: { status: { in: ["ASIGNADO", "PRESTADO"] } },
+    where: { ...visible, status: { in: ["ASIGNADO", "PRESTADO"] } },
     include: { trabajadorActual: true },
     orderBy: { fechaSalida: "asc" },
     take: 8,
@@ -34,6 +35,7 @@ export async function getDashboardData() {
   const recientes = await prisma.movimientoInventario.findMany({
     take: 8,
     orderBy: { fecha: "desc" },
+    where: { articulo: { is: visible } },
     include: { articulo: true, trabajador: true },
   });
 

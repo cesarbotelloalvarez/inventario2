@@ -32,6 +32,10 @@ export const trabajadorUpdateSchema = trabajadorCreateSchema.partial();
 export const entregaSchema = z.object({ trabajadorId: z.string().min(1), comentarios: z.string().optional().nullable() });
 export const devolucionSchema = z.object({ condicion: condicionArticuloSchema, comentarios: z.string().optional().nullable() });
 export const correccionSchema = z.object({ status: articuloStatusSchema.optional(), condicion: condicionArticuloSchema.optional(), comentarios: z.string().min(1, "Comentario requerido") });
+export const ocultarArticuloSchema = z.object({
+  password: z.string().min(1, "Contraseña requerida"),
+  motivo: z.string().optional().nullable(),
+});
 export const auditoriaSchema = z.object({
   trabajadorId: z.string().min(1),
   fecha: z.coerce.date().optional(),

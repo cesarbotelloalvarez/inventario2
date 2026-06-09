@@ -8,9 +8,9 @@ export const demoTrabajadores = [
 ];
 
 export const demoArticulos = [
-  { id: "art-1", nombre: "Taladro inalámbrico", categoria: "Herramienta", descripcion: "Taladro para trabajo general", numeroSerie: "TL-001", fotoUrl: null, cantidad: null, fechaRegistro: new Date(), status: "STOCK" as ArticuloStatus, condicion: "OPTIMO" as CondicionArticulo, trabajadorActualId: null, fechaSalida: null, createdAt: new Date(), updatedAt: new Date(), trabajadorActual: null },
-  { id: "art-2", nombre: "Pistola de calor", categoria: "Herramienta", descripcion: "Uso para vinil y polarizado", numeroSerie: "PC-014", fotoUrl: null, cantidad: null, fechaRegistro: new Date(), status: "PRESTADO" as ArticuloStatus, condicion: "OPTIMO" as CondicionArticulo, trabajadorActualId: "trab-1", fechaSalida: new Date(Date.now() - 2 * 86400000), createdAt: new Date(), updatedAt: new Date(), trabajadorActual: demoTrabajadores[0] },
-  { id: "art-3", nombre: "Navajas de repuesto", categoria: "Consumible", descripcion: "Caja con repuestos", numeroSerie: null, fotoUrl: null, cantidad: 25, fechaRegistro: new Date(), status: "ASIGNADO" as ArticuloStatus, condicion: "DANADO" as CondicionArticulo, trabajadorActualId: "trab-2", fechaSalida: new Date(Date.now() - 12 * 86400000), createdAt: new Date(), updatedAt: new Date(), trabajadorActual: demoTrabajadores[1] },
+  { id: "art-1", nombre: "Taladro inalámbrico", categoria: "Herramienta", descripcion: "Taladro para trabajo general", numeroSerie: "TL-001", fotoUrl: null, cantidad: null, fechaRegistro: new Date(), status: "STOCK" as ArticuloStatus, condicion: "OPTIMO" as CondicionArticulo, trabajadorActualId: null, fechaSalida: null, oculto: false, ocultadoAt: null, ocultadoMotivo: null, createdAt: new Date(), updatedAt: new Date(), trabajadorActual: null },
+  { id: "art-2", nombre: "Pistola de calor", categoria: "Herramienta", descripcion: "Uso para vinil y polarizado", numeroSerie: "PC-014", fotoUrl: null, cantidad: null, fechaRegistro: new Date(), status: "PRESTADO" as ArticuloStatus, condicion: "OPTIMO" as CondicionArticulo, trabajadorActualId: "trab-1", fechaSalida: new Date(Date.now() - 2 * 86400000), oculto: false, ocultadoAt: null, ocultadoMotivo: null, createdAt: new Date(), updatedAt: new Date(), trabajadorActual: demoTrabajadores[0] },
+  { id: "art-3", nombre: "Navajas de repuesto", categoria: "Consumible", descripcion: "Caja con repuestos", numeroSerie: null, fotoUrl: null, cantidad: 25, fechaRegistro: new Date(), status: "ASIGNADO" as ArticuloStatus, condicion: "DANADO" as CondicionArticulo, trabajadorActualId: "trab-2", fechaSalida: new Date(Date.now() - 12 * 86400000), oculto: false, ocultadoAt: null, ocultadoMotivo: null, createdAt: new Date(), updatedAt: new Date(), trabajadorActual: demoTrabajadores[1] },
 ];
 
 export const demoMovimientos = [
@@ -20,19 +20,20 @@ export const demoMovimientos = [
 ];
 
 export function demoDashboardData() {
+  const visibles = demoArticulos.filter((a) => !a.oculto);
   return {
     totales: {
-      total: demoArticulos.length,
-      stock: demoArticulos.filter((a) => a.status === "STOCK").length,
-      asignado: demoArticulos.filter((a) => a.status === "ASIGNADO").length,
-      prestado: demoArticulos.filter((a) => a.status === "PRESTADO").length,
-      perdido: demoArticulos.filter((a) => a.status === "PERDIDO").length,
-      terminado: demoArticulos.filter((a) => a.status === "TERMINADO").length,
-      danados: demoArticulos.filter((a) => a.condicion === "DANADO").length,
+      total: visibles.length,
+      stock: visibles.filter((a) => a.status === "STOCK").length,
+      asignado: visibles.filter((a) => a.status === "ASIGNADO").length,
+      prestado: visibles.filter((a) => a.status === "PRESTADO").length,
+      perdido: visibles.filter((a) => a.status === "PERDIDO").length,
+      terminado: visibles.filter((a) => a.status === "TERMINADO").length,
+      danados: visibles.filter((a) => a.condicion === "DANADO").length,
     },
     topPerdidos: [],
     topDanados: [{ id: "trab-2", nombre: "Ana López", total: 1 }],
-    fueraMasTiempo: demoArticulos.filter((a) => a.status === "ASIGNADO" || a.status === "PRESTADO"),
+    fueraMasTiempo: visibles.filter((a) => a.status === "ASIGNADO" || a.status === "PRESTADO"),
     recientes: demoMovimientos,
   };
 }

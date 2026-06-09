@@ -11,7 +11,7 @@ export const CONDICION_LABELS: Record<CondicionArticulo, string> = {
   OPTIMO: "Óptimo", DANADO: "Dañado", PERDIDO: "Perdido", TERMINADO: "Terminado",
 };
 export const MOVIMIENTO_LABELS: Record<TipoMovimientoInventario, string> = {
-  REGISTRO: "Registro", ASIGNACION: "Asignación", PRESTAMO: "Préstamo", DEVOLUCION: "Devolución", DANO: "Daño", PERDIDA: "Pérdida", TERMINADO: "Terminado", AUDITORIA: "Auditoría", CORRECCION: "Corrección",
+  REGISTRO: "Registro", ASIGNACION: "Asignación", PRESTAMO: "Préstamo", DEVOLUCION: "Devolución", DANO: "Daño", PERDIDA: "Pérdida", TERMINADO: "Terminado", AUDITORIA: "Auditoría", CORRECCION: "Corrección", OCULTAR: "Ocultar", RESTAURAR: "Restaurar",
 };
 export function formatFecha(value: Date | string) { return new Intl.DateTimeFormat("es-MX", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value)); }
 export function formatDiasDesde(value?: Date | string | null) {
